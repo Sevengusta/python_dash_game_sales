@@ -1,5 +1,4 @@
 import streamlit as st
-import time
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -21,10 +20,12 @@ hide_streamlit_style = """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # ========== Styles ============ #
-colors = [
-    '#3366CC', '#DC3912', '#FF9900', '#109618', '#990099',
-    '#0099C6', '#DD4477', '#66AA00', '#B82E2E', '#316395'
-]  # px.colors.qualitative.G10
+# colors = [
+#     '#3366CC', '#DC3912', '#FF9900', '#109618', '#990099',
+#     '#0099C6', '#DD4477', '#66AA00', '#B82E2E', '#316395'
+# ]
+colors = ['rgb(27,158,119)', 'rgb(217,95,2)', 'rgb(117,112,179)', 'rgb(231,41,138)', 'rgb(102,166,30)', 'rgb(230,171,2)', 'rgb(166,118,29)', 'rgb(102,102,102)', 'rgb(228,26,28)', 'rgb(55,126,184)'  ]
+# px.colors.qualitative.Dark2
 
 tab_card = {'height': '100%'}
 main_config = {
@@ -51,6 +52,26 @@ frame1, *args = st.columns(1)
 h_bar, *args = st.columns(1)
 frame2, *args = st.columns(1)
 
+#  ---- facilties to data mapping
+global_genres = [
+    'Adventure', 'Action', 'Racing', 'Sports', 'Strategy', 'Fighting',
+    'Misc', 'Platform', 'Puzzle', 'Role-Playing', 'Simulation', 'Shooter'
+]
+genres_PT = [
+    'Ação', 'Aventura', 'Luta', 'Miscelânea', 'Plataforma', 'Quebra-Cabeça',
+    'Corrida', 'RPG', 'Tiro', 'Simulação', 'Esportes', 'Estratégia'
+]
+regions = [ 'EU_Sales', 'JP_Sales',  'NA_Sales', 'Other_Sales']
+regions_PT = [ 'Europa', 'Japão', 'América do Norte', 'Outras Regiões']
+
+legend_data = {
+        'NA_Sales': 'América do Norte',
+        'EU_Sales': 'Europa',
+        'JP_Sales': 'Japão',
+        'Other_Sales': 'Outras Regiões'
+    }
+
+genres_PT = sorted(genres_PT)
 
 # ========== Tratamento inicial do df ============ #
 df = pd.read_csv('vgsales.csv')
@@ -68,27 +89,7 @@ df['Global_Sales'] = df['Global_Sales'].astype('float')
 df['JP_Sales'] = df['JP_Sales'].astype('float')
 df['EU_Sales'] = df['EU_Sales'].astype('float')
 df['NA_Sales'] = df['NA_Sales'].astype('float')
-
-#  ---- facilties to data mapping
-global_genres = [
-    'Adventure', 'Action', 'Racing', 'Sports', 'Strategy', 'Fighting',
-    'Misc', 'Platform', 'Puzzle', 'Role-Playing', 'Simulation', 'Shooter'
-]
-genres_PT = [
-    'Ação', 'Aventura', 'Luta', 'Miscelânea', 'Plataforma', 'Puzzle',
-    'Corrida', 'Role-Playing', 'Tiro', 'Simulação', 'Esportes', 'Estratégia'
-]
-regions = [ 'EU_Sales', 'JP_Sales',  'NA_Sales', 'Other_Sales']
-regions_PT = [ 'Europa', 'Japão', 'América do Norte', 'Outras Regiões']
-
-legend_data = {
-        'NA_Sales': 'América do Norte',
-        'EU_Sales': 'Europa',
-        'JP_Sales': 'Japão',
-        'Other_Sales': 'Outros'
-    }
-
-genres_PT = sorted(genres_PT)
+df.rename(columns=legend_data, inplace=True)
 
 
 # ---- features que serão utilizadas para filtrar os dados
@@ -186,7 +187,7 @@ def df_factory(min, max, column: Union[str, List[str]], selected_column: Union[s
 
 
 with header:
-    st.title(":blue[Mercado de jogos eletrônicos]")
+    st.title("Mercado de jogos eletrônicos")
 
 with data_sets:
     df_name = df_factory(min, max, 'Name')
@@ -195,9 +196,9 @@ with data_sets:
                     best_game]['Global_Sales'].sum() * 1000000
     fig_global_sales = go.Figure(go.Indicator(
         mode="number",
-        title={"text": f"<span style='font-size:100%; color: #3366CC; text-align:center;font-weight:bold'>Título mais vendido</span><br><span style='font-size:80%; color: #3366CC; font-weight:bold'> {best_game} </span><br><span style='font-size:70%; color:#000';>Em US$</span>"},
+        title={"text": f"<span style='font-size:100%;  text-align:center;font-weight:bold'>Título mais vendido</span><br><span style='font-size:80%;  font-weight:bold'> {best_game} </span><br><span style='font-size:70%';>Em US$</span>"},
         value=sales,
-        number={'prefix': '$', 'font' :{'color': '#3366CC'}},
+        number={'prefix': '$'},
         domain={'x': [0, 1], 'y': [0, 1]},
     ))
     fig_global_sales.update_layout(height=270)
@@ -207,8 +208,8 @@ with data_sets:
     df_count_games = df_factory(min, max, 'Name')
     fig_total_games = go.Figure(go.Indicator(
         mode='number',
-        title={"text": f"<span style='font-size:100%; color: #DC3912;  font-weight:bold'>Foram produzidos <br> </span><br><span style='font-size:80%; color:#000'>Em títulos</span>"},
-        number={'valueformat': '.0f', 'font' :{'color': '#DC3912'}},
+        title={"text": f"<span style='font-size:100%;  font-weight:bold'>Foram produzidos <br> </span><br><span style='font-size:75%'>Em títulos</span>"},
+        number={'valueformat': '.3s'},
         value=df_count_games['Name'].count(),
         domain={'x': [0, 1], 'y': [0, 1]},
     ))
@@ -222,9 +223,9 @@ with data_sets:
                    best_pub]['Global_Sales'].sum() * 1000000
     fig_total_games = go.Figure(go.Indicator(
         mode='number',
-        title={"text": f"<span style='font-size:100%; color: #FF9900; text-align:center;font-weight:bold'>Maior Desenvolvedora</span><br><span style='font-size:80%;  color: #FF9900; font-weight:bold'> {best_pub}</span><br><span style='font-size:70%; color:#000'>Em US$</span>"},
+        title={"text": f"<span style='font-size:100%;  text-align:center;font-weight:bold'>Maior Desenvolvedora</span><br><span style='font-size:80%;   font-weight:bold'> {best_pub}</span><br><span style='font-size:70%'>Em US$</span>"},
         value=sales,
-        number={'prefix': '$',  'font' :{'color': '#FF9900'}},
+        number={'prefix': '$'},
         domain={'x': [0, 1], 'y': [0, 1]},
     ))
     fig_total_games.update_layout(height=270)
@@ -251,7 +252,6 @@ with data_sets:
     fig_top_plat.update_traces(marker=dict(color=colors, coloraxis="coloraxis"),)
     fig_top_plat.update_layout(
         main_config,
-        font_color='black',
         hovermode=False,
         xaxis=dict(fixedrange=True, visible=False),
         yaxis=dict(visible=False),
@@ -280,7 +280,7 @@ with data_sets:
 
     fig_top_games.update_layout(
         main_config,
-        font_color='black',
+        
         hovermode=False, 
         xaxis=dict(fixedrange=True, visible=False),
         yaxis=dict(visible=False),
@@ -289,20 +289,22 @@ with data_sets:
     v_bar2.plotly_chart(fig_top_games, use_container_width=True)
 
 with data_sets:
-    global_regions = regions.copy()
+    global_regions = regions_PT.copy()
     global_regions.append('Global_Sales')
     df_region = df_factory(min, max, 'Year', global_regions)
-
     df_region = df_region.sort_values(by='Year', ascending=False)
+    
+    
 
     fig_sales_region = px.line(
         df_region, x="Year", title="Faturamento por região",
-        y=regions,
+        y=regions_PT,
         labels={'variable': 'Região', 'value': 'Vendas', 'Year': 'Ano'},
         height=500,
         color_discrete_sequence=colors,
     )
     fig_sales_region.update_layout(
+        title=dict(font=dict(size=20)),
         yaxis=dict(tickformat=".2f", ticksuffix='Mi', tickprefix='$'),
         
     )
@@ -316,7 +318,7 @@ with data_sets:
 
     fig_sales_region.update_layout(
         xaxis=dict(title=None, fixedrange=True),
-        font_color='black',
+        
         yaxis=dict(title=None, fixedrange=True),
         legend=dict(
         title=None, orientation="h", y=1, yanchor="bottom", x=0.5, xanchor="center"
@@ -330,20 +332,20 @@ with data_sets:
             selector=dict(name=regions[index])
         )
     fig_sales_region.update_xaxes(
-        tickfont=dict(color='black'),
+        
     )
     fig_sales_region.update_yaxes(
         showgrid=False, 
-        tickfont=dict(color='black'),
+        
         color='black'
     )
     scatter.plotly_chart(fig_sales_region, use_container_width=True,)
 
 with data_sets:
-    df_NA = df_factory(min, max, 'Name', 'NA_Sales').round(2).head(5)
-    df_EU = df_factory(min, max, 'Name', 'EU_Sales').round(2).head(5)
-    df_JP = df_factory(min, max, 'Name', 'JP_Sales').round(2).head(5)
-    df_Other = df_factory(min, max, 'Name', 'Other_Sales').round(2).head(5)
+    df_NA = df_factory(min, max, 'Name', 'América do Norte').round(2).head(5)
+    df_EU = df_factory(min, max, 'Name', 'Europa').round(2).head(5)
+    df_JP = df_factory(min, max, 'Name', 'Japão').round(2).head(5)
+    df_Other = df_factory(min, max, 'Name', 'Outras Regiões').round(2).head(5)
 
     fig = make_subplots(
         shared_yaxes=True,
@@ -352,23 +354,23 @@ with data_sets:
                 {"type": "bar"}, {"type": "bar"}]],
     )
     fig.add_trace(go.Bar(
-        y=df_NA['NA_Sales'], x=df_NA['Name'], marker=dict(color=colors[2], coloraxis="coloraxis"),
-        name='América do Norte', text=[f'{x:.1f}Mi' for x in df_NA['NA_Sales']],
+        y=df_NA['América do Norte'], x=df_NA['Name'], marker=dict(color=colors[2], coloraxis="coloraxis"),
+        name='América do Norte', text=[f'{x:.1f}Mi' for x in df_NA['América do Norte']],
     ), row=1, col=4)
     fig.add_trace(go.Bar(
-        y=df_EU['EU_Sales'], x=df_EU['Name'], marker=dict(color=colors[0], coloraxis="coloraxis"),
-        name='Europa', text=[f'{x:.1f}Mi' for x in df_EU['EU_Sales']],
+        y=df_EU['Europa'], x=df_EU['Name'], marker=dict(color=colors[0], coloraxis="coloraxis"),
+        name='Europa', text=[f'{x:.1f}Mi' for x in df_EU['Europa']],
 
     ), row=1, col=1)
     fig.add_trace(go.Bar(
-        y=df_JP['JP_Sales'], x=df_JP['Name'], marker=dict(color=colors[1], coloraxis="coloraxis"),
-        name='Japão', text=[f'{x:.1f}Mi' for x in df_JP['JP_Sales']],
+        y=df_JP['Japão'], x=df_JP['Name'], marker=dict(color=colors[1], coloraxis="coloraxis"),
+        name='Japão', text=[f'{x:.1f}Mi' for x in df_JP['Japão']],
     ), row=1, col=2)
     
     fig.add_trace(go.Bar(
-        y=df_Other['Other_Sales'], x=df_Other['Name'], marker=dict(color=colors[3], coloraxis="coloraxis"),
+        y=df_Other['Outras Regiões'], x=df_Other['Name'], marker=dict(color=colors[3], coloraxis="coloraxis"),
         name='Outras Regiões',
-        text=[f'{x:.1f}Mi' for x in df_Other['Other_Sales']],
+        text=[f'{x:.1f}Mi' for x in df_Other['Outras Regiões']],
     ), row=1, col=3)
     for i in range(1, 5):
         fig.update_xaxes(row=1, col=i, visible=False, fixedrange=True,)
@@ -384,16 +386,19 @@ with data_sets:
             textposition="outside", cliponaxis=False,
         )
 
-    fig.update_layout(title_text='Títulos mais vendidos em cada Região', font_color='black',)
+    fig.update_layout(
+        title_text='Títulos mais vendidos em cada Região',
+        title=dict(font=dict(size=20)),
+        )
     frame1.plotly_chart(fig, use_container_width=True, height=400, )
 
 with data_sets:
-    df_genre = df_factory(min, max, 'Genre', regions)
+    df_genre = df_factory(min, max, 'Genre', regions_PT)
 
     genre = px.bar(
         df_genre,
         y='Genre',
-        x=regions,
+        x=regions_PT,
         title='Vendas por Gênero',
         labels={'variable': 'Região', 'value':'Vendas', 'Genre': 'Gênero' },
         orientation='h',
@@ -407,13 +412,13 @@ with data_sets:
     )
     genre.update_yaxes(
         ticktext=genres_PT, 
-        tickfont=dict(color='black'),
+        
         tickvals=global_genres,  categoryorder='total ascending',)
     genre.update_layout(
-        font_color='black',
+        title=dict(font=dict(size=20)),
         hovermode=None,
-        height=700,
-        xaxis=dict(fixedrange=True),
+        height=800,
+        xaxis=dict(fixedrange=True, categoryorder='total ascending'),
         yaxis_title=None,
         xaxis_title=None,
         legend=dict(
@@ -421,15 +426,14 @@ with data_sets:
         )
     )
     
-    for index, region in enumerate(regions):
+    for index, region in enumerate(regions_PT):
         genre.update_traces(
-            text=[f'{x:.2f}Mi' for x in df_genre[region].round(2)],
+            text=[f'{x:.1f}' for x in df_genre[region].round(2)],
             name=regions_PT[index],
             selector=dict(name=region)
         )
     genre.update_traces(
-        textangle=0,
-        textposition="outside", 
+        textangle=270,
     )
 
     frame2.plotly_chart(genre, use_container_width=True )
