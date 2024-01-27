@@ -1,24 +1,24 @@
-# Fonte de dados
-- Origem: Os dados foram obtidos através de scraping do site [vgchartz](https://vgchartz.com./).
-- Tamanho: Mais de 16.500 linhas e 11 colunas.
-# Detalhamento das colunas
-- **rank**: Índice da coluna
-- **Name**: Nome do jogo
-- **Plataform**: Plataforma que o jogo foi lançado
-- **Year**: Ano de sua publicação
-- **Genre**: Gênero atribuído ao jogo
-- **Publisher**: Distribuidora dos jogos
-- **NA_Sales**: Vendas na América do Norte
-- **EU_Sales**: Vendas na Europa
-- **JP_Sales**: Vendas no Japão
-- **Other_Sales**: Vendas em outras regiões
+# Data Source
+- Source: The data was obtained through scraping from the vgchartz website.
+- Size: Over 16,500 rows and 11 columns.
+# Column Details
+- rank: Index of the column
+- Name: Name of the game
+- Platform: Platform the game was released on
+- Year: Year of its publication
+- Genre: Genre assigned to the game
+- Publisher: Game publisher
+- NA_Sales: Sales in North America
+- EU_Sales: Sales in Europe
+- JP_Sales: Sales in Japan
+- Other_Sales: Sales in other regions
 
 
 
-fonte de dados do projeto: https://www.kaggle.com/datasets/gregorut/videogamesales/code?datasetId=284&sortBy=voteCount 
+Project data source: https://www.kaggle.com/datasets/gregorut/videogamesales/code?datasetId=284&sortBy=voteCount 
 # Modificações realizadas no dataset
-- **Limpeza de Dados**: Linhas com informações ausentes sobre os jogos foram removidas.
-- **Exclusão de Anos Irrelevantes**: Dados dos anos mais recentes (2017-2020) foram considerados irrelevantes e não foram utilizados.
-- **Nova Coluna Global_Sales**: Foi criada uma coluna chamada Global_Sales, que contém a soma das vendas nas quatro regiões disponíveis (América do Norte, Europa, Japão e outras regiões).
+- **Data Cleaning**: Rows with missing information about the games were removed.
+- **Exclusion of Irrelevant Years**: Data from the most recent years (2017-2020) were considered irrelevant and not used.
+- **New Column Global_Sales**: A new column called Global_Sales was created, containing the sum of sales in the four available regions (North America, Europe, Japan, and other regions).
  
-O projeto está disponível em: https://sevengusta-dash-game-sales.streamlit.app/
+The project is available at:: https://sevengusta-dash-game-sales.streamlit.app/
