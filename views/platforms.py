@@ -238,7 +238,7 @@ with st.expander("Gráficos", icon=":material/monitoring:"):
                 showgrid=False, 
                 color='black'
             )
-            fig_total_sales.update_traces(marker=dict(size=6,
+            fig_total_sales.update_traces(marker=dict(size=12,
                                     line=dict(width=0.8, 
                                             color='DarkSlateGrey')),
                         selector=dict(mode='markers'))
